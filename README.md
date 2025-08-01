@@ -2,10 +2,13 @@
 
 A professional, real-time campus navigation system for Alex Ekwueme Federal University Ndufu-Alike (AE-FUNAI) built with React and Google Maps API.
 
-![AE-FUNAI Navigator](https://img.shields.io/badge/Status-Production%20Ready-success)
+**🚀 Live Demo**: [https://ae-funailocationfinder.vercel.app/](https://ae-funailocationfinder.vercel.app/)
+
+![AE-FUNAI Navigator](https://img.shields.io/badge/Status-Live%20on%20Vercel-success)
 ![React](https://img.shields.io/badge/React-19.0.0-blue)
 ![Google Maps](https://img.shields.io/badge/Google%20Maps-API-red)
 ![Vite](https://img.shields.io/badge/Vite-6.3.5-purple)
+![Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-black)
 
 ## 🌟 Features
 
