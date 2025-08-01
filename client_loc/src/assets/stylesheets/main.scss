@@ -1,0 +1,358 @@
+* {
+    box-sizing: border-box;
+    border: none;
+    margin: 0;
+    font-family: fantasy;
+  }
+
+  @mixin het($he: 0px, $wid: 0px, $bgc: 'blue'){
+    height: $he;
+    width: $wid;
+    background-color: $bgc;
+  }
+
+  @mixin disp($he: 100%, $wid: 100%, $disp: flex, $dir: row, $ai: 0, $jc: 0) {
+    display: $disp;
+    height: $he;
+    width: $wid;
+    flex-direction: $dir;
+    align-items: $ai;
+    justify-content: $jc;
+}
+
+#signup_main_cont {
+    @include disp($he: 100vh, $wid: 100vw);
+    background-image: url('../images/bgi/bgi1.svg');
+    background-repeat: no-repeat;    
+    background-size: cover;
+
+    #signup_first_sec {
+        @include disp($he: 100%, $wid: 45%, $dir: column, $ai: center, $jc: center);
+ 
+        form{
+            @include disp($dir: column, $wid: 90%, $he: 70%, $ai: center, $jc: center);
+            border: 1px solid green;
+            border-radius: 1rem;
+            gap: 1%;
+            background-color: rgb(87, 103, 196);
+
+            div {
+                width: 85%;
+                height: 10%;     
+                
+                input {
+                    font-family: cursive;
+                    height: 95%;
+                    width: 100%;
+                    font-size: 18px;
+                    outline: none;
+                    border: 1px solid rgb(39, 37, 37);
+                    border-radius: 1rem;
+                    background-color: #a0d4bc;
+                }
+            }
+
+            p {
+                border: 1px solid red;
+                width: 80%;
+                text-align: center;
+                border-radius: 0.3rem;
+            }
+
+
+            button {
+                background-color: #1c3ca5;
+                font-size: 14px;
+                width: 25%;
+                height: 7%;
+                position: relative;
+                left: 30%;
+                border-radius: 1rem;
+                cursor: pointer;
+                box-shadow: 3px 3px;
+            }
+            button:hover{
+                outline-color: rgb(8, 8, 8);
+            }
+            button:disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+
+}
+
+#topBar {
+    @include disp($he: 5.5vh, $wid: 100vw, $dir: row-reverse, $disp: flex);
+    background-color: rgb(65, 70, 69);
+    border: 1px solid black;
+    position: relative;
+
+
+
+    #topbarFirstDiv{
+        @include disp($dir: row-reverse,);
+        @include het($wid: 30%, $he: 100%);
+        margin-right: 2%;
+        gap: 3%;
+
+
+        .image_div{
+            @include het($he: 100%, $wid: 20%, $bgc: rgb(110, 110, 216) );
+            display: flex;
+        }
+        .p_div{
+            @include disp($jc: center, $ai: center );
+            @include het($he: 100%, $wid: 20%, $bgc: rgb(113, 113, 182) );
+            display: flex;
+            font-size: 46px;
+            border: 1px solid rgb(39, 27, 27);
+            border-radius: 50%;
+        }
+
+
+    }
+
+    #topbarSecondDiv{
+        margin-left: 200px;
+    }
+}
+
+.loc_card_cont:hover {
+    border: 2px solid green;
+}
+
+#home_main_cont {
+    @include disp($he: 94.5vh, $wid: 100vw, $dir: row);
+    overflow: hidden;
+
+    #home_first_sec{
+        @include disp($he: 100%, $wid: 35%, $dir: column, );
+        background-color: rgba(157, 175, 175, 0.534);
+
+        #sec1_div1{
+            @include disp($he: 6%, $wid: 100%, $jc: center);
+            margin-top: 1%;
+            gap: 2%;
+
+        }
+
+        #sec1_div2 {
+            height: 33%;
+            border: 1px solid rgb(240, 247, 240);
+        }
+    }
+
+    #home_second_sec{
+        @include disp($wid: 65%, $he: 100vh, $jc: center);
+        background-color: rgb(231, 231, 215);
+
+        #map_div {
+            height: 99%;
+            width: 100%;
+            border-radius: 2%;
+
+            #target_icon {
+                position: absolute;
+                z-index: 1;
+                bottom: 16%;
+                right: 1%;
+                background-color: rgb(13, 38, 71);
+                height: 40px;
+                width: 40px;
+                cursor: pointer;
+            }
+
+            
+        }
+
+        #phoneUICont{
+            display: none;
+        }
+        
+    }
+}
+
+.dropdown_p:hover {
+    background-color: green;
+    cursor: pointer;
+}
+
+.divScroll{
+    overflow: scroll;
+}
+.divScroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+  }
+.searchP{
+    background-color: rgb(16, 39, 33);
+}
+.searchP:hover{
+    background-color: rgb(10, 10, 10);
+    cursor: pointer;
+}
+.homeImgs:hover{
+    cursor: pointer;
+}
+.container {
+    z-index: 1;
+    top: 3%;
+    right: 9%;
+    width: 80%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+}
+.contact-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 30px;
+}
+
+.contact-btn:hover {
+    background-color: #0056b3;
+}
+#mapDirections::-webkit-scrollbar{
+    display: none;
+}
+.cards{
+    background-color: rgb(57, 78, 92);
+    color: white;
+}
+
+
+#admin_main_cont{
+    @include disp($he: 100vh, $wid: 100vw, $disp: flex, $dir: row);
+    background-color: rgb(59, 58, 58);
+
+    #admin_first_sec{
+        @include het($wid: 30%, $he: 99.7%, $bgc: rgb(14, 12, 12));
+        border: 1px solid black;
+        border-radius: 2%;
+        overflow: hidden;
+
+        #sec1_div1{
+            border: 1px solid gold;
+            height: 8%;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        #sec1_div2{
+            @include disp($he: 92%, $wid: 100%, $dir: column, $ai: center);
+            color: white;
+
+            h3{
+                @include disp($he: 6%, $wid: 98%, $ai: center);
+                margin-top: 1%;
+                text-align: justify;
+            }
+
+            h3:hover{
+                background-color: #fff;
+                color: black;
+                cursor: pointer;
+            }
+        }
+
+
+    }
+
+    #admin_second_sec{
+        @include het($he: 100%, $wid: 70%,);
+
+        #sec2_div1{
+            @include disp($he: 55%, $wid: 80%, $dir: column);
+            background-color: rgb(95, 77, 77);
+            position: relative;
+            top: 2%;
+            left: 10%;
+        }
+    }
+}
+
+
+
+
+
+@media (max-width: 500px) {
+    #mainCont {
+         @include disp($he: 100dvh, $wid: 100dvw); 
+        overflow: hidden;
+        background-color: green;
+
+
+        #home_first_sec {
+            display: none;
+        }
+
+        #home_second_sec {
+            @include disp($wid: 100vw, $he:100vh, $disp: flex, $jc: center);
+
+            #map_div{
+                height: 90%;
+                width: 100%;
+
+                #target_icon {
+                    height: 5%;
+                    width: 150px;
+                    background-color: rgb(223, 140, 140);
+                    position: absolute;
+                    left: 80%;
+                    top: 70%;
+                }
+            }
+
+            #phoneUICont{
+                display: flex;
+                height: 11%;
+                width: 100%;
+                
+                #phone_nav_div {
+                    @include disp($he: 100%, $wid: 100%, $disp: flex,$jc:center);
+                    border: 3px solid black;
+                    border-top-right-radius: 14%;
+                    border-top-left-radius: 14%;
+                    gap: 2%;
+    
+                    div {
+                        border: 1px solid rgb(181, 190, 181);
+                        width: 23%;
+    
+                        img {
+                            margin-top: 7%;
+                            background-color: rgb(206, 193, 193);
+                            width: 90%;
+                            height: 89%;
+                        }
+                    }
+            
+                }
+            }
+
+        }
+
+
+    }
+
+    #topBar {
+        display: none;
+    }
+
+
+}
+
+/* @mixin disp($he: 100%, $wid: 100%, $disp: flex, $dir: row, $ai: 0, $jc: 0) {
+ */
+
+#overview_main_cont{
+    @include disp(100px, 180px, flex, column, center, center );
+    border: 1px solid red;
+    gap: 2%; 
+}

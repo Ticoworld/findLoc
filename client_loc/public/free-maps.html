@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🆓 Free Campus Maps - No Card Required!</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .feature:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        .feature h3 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+        .controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .route-info {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🆓 Free Campus Maps</h1>
+        <div class="subtitle">No Card Required • No Billing • 100% Free</div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🗺️ OpenStreetMap</h3>
+                <p>High-quality, open-source mapping data with detailed campus information</p>
+            </div>
+            <div class="feature">
+                <h3>🧭 Smart Routing</h3>
+                <p>Powered by OpenRouteService for accurate walking directions</p>
+            </div>
+            <div class="feature">
+                <h3>📍 Live Location</h3>
+                <p>Real-time user location detection for precise navigation</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Lightning Fast</h3>
+                <p>Instant loading with no API key setup or billing hassles</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3>🚀 Campus Navigation Demo</h3>
+            <div class="button-group">
+                <button class="btn" onclick="showCampusOverview()">🏫 Campus Overview</button>
+                <button class="btn" onclick="findMyLocation()">📍 Find My Location</button>
+                <button class="btn" onclick="planRoute()">🚶‍♂️ Plan Route</button>
+                <button class="btn" onclick="showBuildings()">🏢 Show All Buildings</button>
+            </div>
+            <div id="routeInfo" class="route-info"></div>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🔄 vs Google Maps</h3>
+                <p><strong>Free Maps:</strong> ✅ No card required<br>
+                <strong>Google Maps:</strong> ❌ Requires billing setup</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Usage Limits</h3>
+                <p><strong>Free Maps:</strong> ✅ 2000 routes/day<br>
+                <strong>Google Maps:</strong> ⚠️ Complex billing structure</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Setup Time</h3>
+                <p><strong>Free Maps:</strong> ✅ 5 minutes<br>
+                <strong>Google Maps:</strong> ❌ 30+ minutes with billing</p>
+            </div>
+            <div class="feature">
+                <h3>🎯 Campus Use</h3>
+                <p><strong>Free Maps:</strong> ✅ Perfect for students<br>
+                <strong>Google Maps:</strong> ⚠️ Overkill for campus</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let userLocation = null;
+        let routeLayer = null;
+
+        // Campus locations data
+        const campusLocations = [
+            { name: 'Front Gate', lat: 6.1378266, lng: 8.1459486, icon: '🚪' },
+            { name: 'Main Library', lat: 6.1398266, lng: 8.1479486, icon: '📚' },
+            { name: 'Student Center', lat: 6.1368266, lng: 8.1439486, icon: '🎓' },
+            { name: 'Science Building', lat: 6.1408266, lng: 8.1449486, icon: '🔬' },
+            { name: 'Engineering Block', lat: 6.1358266, lng: 8.1469486, icon: '⚙️' },
+            { name: 'Medical Center', lat: 6.1388266, lng: 8.1429486, icon: '🏥' },
+            { name: 'Sports Complex', lat: 6.1348266, lng: 8.1489486, icon: '🏃‍♂️' },
+            { name: 'Cafeteria', lat: 6.1418266, lng: 8.1439486, icon: '🍽️' }
+        ];
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([6.1378266, 8.1459486], 16);
+
+            // Add beautiful map tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors | 🆓 Free Campus Maps',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Add campus locations
+            campusLocations.forEach(location => {
+                const icon = L.divIcon({
+                    html: location.icon,
+                    iconSize: [30, 30],
+                    className: 'campus-location-icon'
+                });
+
+                L.marker([location.lat, location.lng], { icon })
+                    .addTo(map)
+                    .bindPopup(`<strong>${location.name}</strong><br>📍 Campus Location`);
+            });
+
+            // Get user location
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        const userIcon = L.divIcon({
+                            html: '📍',
+                            iconSize: [25, 25],
+                            className: 'user-location-icon'
+                        });
+
+                        L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
+                            .addTo(map)
+                            .bindPopup('📍 Your Current Location')
+                            .openPopup();
+                    },
+                    () => console.log('Geolocation not available')
+                );
+            }
+        }
+
+        function showCampusOverview() {
+            map.setView([6.1378266, 8.1459486], 15);
+            
+            // Fit to show all campus locations
+            const group = new L.featureGroup(campusLocations.map(loc => 
+                L.marker([loc.lat, loc.lng])
+            ));
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+
+        function findMyLocation() {
+            if (userLocation) {
+                map.setView([userLocation.lat, userLocation.lng], 18);
+            } else {
+                alert('📍 Location not available. Please enable location services.');
+            }
+        }
+
+        async function planRoute() {
+            if (!userLocation) {
+                alert('📍 Please enable location services first!');
+                return;
+            }
+
+            // Route to Main Library as example
+            const destination = campusLocations.find(loc => loc.name === 'Main Library');
+            
+            showLoading('Calculating optimal route...');
+
+            try {
+                const response = await fetch(
+                    `https://api.openrouteservice.org/v2/directions/foot-walking?` +
+                    `api_key=5b3ce3597851110001cf6248a1c9a1b15fdc4b929ad83b71e5f8e7dd&` +
+                    `start=${userLocation.lng},${userLocation.lat}&` +
+                    `end=${destination.lng},${destination.lat}`
+                );
+
+                if (!response.ok) throw new Error('Route calculation failed');
+
+                const data = await response.json();
+                const route = data.features[0];
+                const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                
+                // Remove existing route
+                if (routeLayer) {
+                    map.removeLayer(routeLayer);
+                }
+
+                // Draw new route
+                routeLayer = L.polyline(coordinates, {
+                    color: '#667eea',
+                    weight: 4,
+                    opacity: 0.8
+                }).addTo(map);
+
+                // Fit map to route
+                map.fitBounds(routeLayer.getBounds().pad(0.1));
+
+                // Show route info
+                const distance = (route.properties.segments[0].distance / 1000).toFixed(2);
+                const duration = Math.round(route.properties.segments[0].duration / 60);
+
+                showRouteInfo(`🚶‍♂️ Route to Main Library: ${distance}km • ${duration} minutes`);
+
+            } catch (error) {
+                console.error('Route error:', error);
+                alert('❌ Route calculation failed. Please try again.');
+            }
+            
+            hideLoading();
+        }
+
+        function showBuildings() {
+            showCampusOverview();
+            
+            // Highlight all buildings
+            campusLocations.forEach((location, index) => {
+                setTimeout(() => {
+                    const marker = L.marker([location.lat, location.lng]).addTo(map);
+                    marker.bindPopup(`<strong>${location.name}</strong>`).openPopup();
+                    setTimeout(() => marker.closePopup(), 1000);
+                }, index * 200);
+            });
+        }
+
+        function showLoading(message) {
+            document.getElementById('routeInfo').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    ${message}
+                </div>
+            `;
+            document.getElementById('routeInfo').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('routeInfo').style.display = 'none';
+        }
+
+        function showRouteInfo(message) {
+            document.getElementById('routeInfo').innerHTML = message;
+            document.getElementById('routeInfo').style.display = 'block';
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+
+    <style>
+        .campus-location-icon {
+            background: none !important;
+            border: none !important;
+            font-size: 20px;
+            text-align: center;
+            line-height: 30px;
+        }
+        .user-location-icon {
+            background: none !important;
+            border: none !important;
+            font-size: 16px;
+            text-align: center;
+            line-height: 25px;
+        }
+    </style>
+</body>
+</html>

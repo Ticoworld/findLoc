@@ -1,0 +1,549 @@
+* {
+  box-sizing: border-box;
+  border: none;
+  margin: 0;
+  font-family: fantasy;
+}
+
+
+#signup_main_cont {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: row;
+  align-items: 0;
+  justify-content: 0;
+  background-image: url("../images/bgi/bgi1.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#signup_main_cont #signup_first_sec {
+  display: flex;
+  height: 100%;
+  width: 45%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#signup_main_cont #signup_first_sec form {
+  display: flex;
+  height: 70%;
+  width: 90%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid green;
+  border-radius: 1rem;
+  gap: 1%;
+  background-color: rgb(87, 103, 196);
+}
+#signup_main_cont #signup_first_sec form div {
+  width: 85%;
+  height: 10%;
+}
+#signup_main_cont #signup_first_sec form div input {
+  font-family: cursive;
+  height: 95%;
+  width: 100%;
+  font-size: 18px;
+  outline: none;
+  border: 1px solid rgb(39, 37, 37);
+  border-radius: 1rem;
+  background-color: #a0d4bc;
+}
+#signup_main_cont #signup_first_sec form p {
+  border: 1px solid red;
+  width: 80%;
+  text-align: center;
+  border-radius: 0.3rem;
+}
+#signup_main_cont #signup_first_sec form button {
+  background-color: #1c3ca5;
+  font-size: 14px;
+  width: 25%;
+  height: 7%;
+  position: relative;
+  left: 30%;
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: 3px 3px;
+}
+#signup_main_cont #signup_first_sec form button:hover {
+  outline-color: rgb(8, 8, 8);
+}
+#signup_main_cont #signup_first_sec form button:disabled {
+  cursor: not-allowed;
+}
+
+#topBar {
+  display: flex;
+  height: 5.5vh;
+  width: 100vw;
+  flex-direction: row-reverse;
+  align-items: 0;
+  justify-content: 0;
+  background-color: rgb(65, 70, 69);
+  border: 1px solid black;
+  position: relative;
+}
+#topBar #topbarFirstDiv {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: row-reverse;
+  align-items: 0;
+  justify-content: 0;
+  height: 100%;
+  width: 30%;
+  background-color: "blue";
+  margin-right: 2%;
+  gap: 3%;
+}
+#topBar #topbarFirstDiv .image_div {
+  height: 100%;
+  width: 20%;
+  background-color: rgb(110, 110, 216);
+  display: flex;
+}
+#topBar #topbarFirstDiv .p_div {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 20%;
+  background-color: rgb(113, 113, 182);
+  display: flex;
+  font-size: 46px;
+  border: 1px solid rgb(39, 27, 27);
+  border-radius: 50%;
+}
+#topBar #topbarSecondDiv {
+  margin-left: 200px;
+}
+
+.loc_card_cont:hover {
+  border: 2px solid green;
+}
+
+#home_main_cont {
+  display: flex;
+  height: 94.5vh;
+  width: 100vw;
+  flex-direction: row;
+  align-items: 0;
+  justify-content: 0;
+  overflow: hidden;
+}
+#home_main_cont #home_first_sec {
+  display: flex;
+  height: 100%;
+  width: 35%;
+  flex-direction: column;
+  align-items: 0;
+  justify-content: 0;
+  background-color: rgba(157, 175, 175, 0.534);
+}
+#home_main_cont #home_first_sec #sec1_div1 {
+  display: flex;
+  height: 6%;
+  width: 100%;
+  flex-direction: row;
+  align-items: 0;
+  justify-content: center;
+  margin-top: 1%;
+  gap: 2%;
+}
+#home_main_cont #home_first_sec #sec1_div2 {
+  height: 33%;
+  border: 1px solid rgb(240, 247, 240);
+}
+#home_main_cont #home_second_sec {
+  display: flex;
+  height: 100vh;
+  width: 65%;
+  flex-direction: row;
+  align-items: 0;
+  justify-content: center;
+  background-color: rgb(231, 231, 215);
+}
+#home_main_cont #home_second_sec #map_div {
+  height: 99%;
+  width: 100%;
+  border-radius: 2%;
+}
+#target_icon {
+  position: absolute;
+  z-index: 1;
+  bottom: 10%;
+  right: 1.4%;
+  cursor: pointer;
+}
+#home_main_cont #home_second_sec #phoneUICont {
+  display: none;
+}
+
+.dropdown_p:hover {
+  background-color: green;
+  cursor: pointer;
+}
+
+.divScroll {
+  overflow: scroll;
+}
+
+.divScroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+.searchP {
+  background-color: rgb(16, 39, 33);
+}
+
+.searchP:hover {
+  background-color: rgb(10, 10, 10);
+  cursor: pointer;
+}
+
+.homeImgs:hover {
+  cursor: pointer;
+}
+
+.container {
+  z-index: 1;
+  top: 3%;
+  right: 9%;
+  width: 80%;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+}
+
+.contact-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 30px;
+}
+
+.contact-btn:hover {
+  background-color: #0056b3;
+}
+
+#mapDirections::-webkit-scrollbar {
+  display: none;
+}
+
+.cards {
+  background-color: rgb(57, 78, 92);
+  color: white;
+}
+
+#admin_main_cont {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: row;
+  align-items: 0;
+  justify-content: 0;
+  background-color: rgb(59, 58, 58);
+}
+#admin_main_cont #admin_first_sec {
+  height: 99.7%;
+  width: 30%;
+  background-color: rgb(14, 12, 12);
+  border: 1px solid black;
+  border-radius: 2%;
+  overflow: hidden;
+}
+#admin_main_cont #admin_first_sec #sec1_div1 {
+  border: 1px solid gold;
+  height: 8%;
+  font-size: 30px;
+  text-align: center;
+}
+#admin_main_cont #admin_first_sec #sec1_div2 {
+  display: flex;
+  height: 92%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: 0;
+  color: white;
+}
+#admin_main_cont #admin_first_sec #sec1_div2 h3 {
+  display: flex;
+  height: 6%;
+  width: 98%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: 0;
+  margin-top: 1%;
+  text-align: justify;
+}
+#admin_main_cont #admin_first_sec #sec1_div2 h3:hover {
+  background-color: #fff;
+  color: black;
+  cursor: pointer;
+}
+#admin_main_cont #admin_second_sec {
+  height: 100%;
+  width: 70%;
+  background-color: "blue";
+}
+#admin_main_cont #admin_second_sec #sec2_div1 {
+  display: flex;
+  height: 55%;
+  width: 80%;
+  flex-direction: column;
+  align-items: 0;
+  justify-content: 0;
+  background-color: rgb(95, 77, 77);
+  position: relative;
+  top: 2%;
+  left: 10%;
+}
+#mapDirections {
+  position: absolute;
+  width: 35%;
+  height: 57%;
+  border-top: 3px solid rgb(10, 10, 10);
+  top: 43%;
+  left: 1px;
+  overflow: scroll;
+}
+
+#alert_hidden {
+  display: none;
+}
+#alert_visible{
+      height: fit-content; 
+      display: flex; 
+      flex-Direction: column; 
+      width: 25vw;
+      gap: 10px; 
+      position: absolute; 
+      right: 10px; 
+      bottom: 10px;
+      z-index: 5;
+}
+#dropdown_card_main{
+  width: 85%;
+  top: 10%;
+  left: 8%;
+}
+#search_main_cont{
+  width: 30%;
+  right: 4px;
+}
+#user_main{
+  width: 21%;
+  right: 1%;
+}
+#acc_main{
+  width: 42%; 
+  left: 57%;
+}
+#about_main{
+  width: 60%; 
+  height: 70%;
+  left: 10%;
+}
+
+@media (min-width: 1050px){
+  #acc_main{
+    width: 30%; 
+    height: 62%;
+  }
+  
+  #user_main{
+    width: 13%;
+    top: 5.4%;
+    right: 20.5%;
+
+  }
+  #search_main_cont{
+    width: 20%;
+    right: 20.5%;
+    top: 5.4%;
+  }
+  
+  #dropdown_card_main{
+    width: 55%;
+    top: 10%;
+    left: 23%;
+  }
+  #main_context{
+    height: 100vh;
+    width: 100vw;
+    background-color: red;
+  }
+  #alert_visible{
+    height: fit-content; 
+    display: flex; 
+    flex-Direction: column; 
+    width: 14vw;
+    gap: 10px; 
+    position: absolute; 
+    right: 2%; 
+    top: 10px;
+    z-index: 2;
+}
+#alert_visible p {
+  font-size: 15Spx;
+  text-align: center;
+}
+  #this{
+    background-color: rgb(24, 19, 19);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #signup_main_cont {
+    display: flex;
+    height: 100vh;
+    width: 60vw;
+    align-items: 0;
+    justify-content: 0;
+    background-image: url("../images/bgi/bgi1.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  #mainCont {
+    background-color: rgb(24, 19, 19);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+
+  }
+
+  #topBar {
+    width: 61vw;
+    border-radius: 0.5rem;
+  }
+  #topBar #topbarFirstDiv .image_div{
+    width: 16%;
+  }
+
+  #target_icon{
+    position: absolute;
+    right: 21%;
+    top: 84.5vh;
+    z-index: 1;
+    cursor: pointer;
+
+  }
+
+  #home_main_cont {
+    height: 94.5vh;
+    width: 60vw;
+  }
+  #mapDirections{
+      position: absolute;
+      width: 20.3%;
+      left: 20.3vw;
+
+  }
+}
+
+
+@media (max-width: 500px) {
+  #signup_main_cont {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: row;
+    align-items: 0;
+    justify-content: 0;
+  }
+
+  #mainCont {
+    display: flex;
+    height: 100dvh;
+    width: 100dvw;
+    flex-direction: row;
+    align-items: 0;
+    justify-content: 0;
+    overflow: hidden;
+    background-color: green;
+  }
+  #mainCont #home_first_sec {
+    display: none;
+  }
+  #mainCont #home_second_sec {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: row;
+    align-items: 0;
+    justify-content: center;
+  }
+  #mainCont #home_second_sec #map_div {
+    height: 90%;
+    width: 100%;
+  }
+  #mainCont #home_second_sec #map_div #target_icon {
+    height: 5%;
+    width: 150px;
+    background-color: rgb(223, 140, 140);
+    position: absolute;
+    left: 80%;
+    top: 70%;
+  }
+  #mainCont #home_second_sec #phoneUICont {
+    display: flex;
+    height: 11%;
+    width: 100%;
+  }
+  #mainCont #home_second_sec #phoneUICont #phone_nav_div {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: row;
+    align-items: 0;
+    justify-content: center;
+    border: 3px solid black;
+    border-top-right-radius: 14%;
+    border-top-left-radius: 14%;
+    gap: 2%;
+  }
+  #mainCont #home_second_sec #phoneUICont #phone_nav_div div {
+    border: 1px solid rgb(181, 190, 181);
+    width: 23%;
+  }
+  #mainCont #home_second_sec #phoneUICont #phone_nav_div div img {
+    margin-top: 7%;
+    background-color: rgb(206, 193, 193);
+    width: 90%;
+    height: 89%;
+  }
+  #topBar {
+    display: none;
+  }
+}
+/* @mixin disp($he: 100%, $wid: 100%, $disp: flex, $dir: row, $ai: 0, $jc: 0) {
+ */
+#overview_main_cont {
+  display: flex;
+  height: 100px;
+  width: 180px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid red;
+  gap: 2%;
+}
+
+/*# sourceMappingURL=main.css.map */

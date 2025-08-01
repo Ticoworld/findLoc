@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #map { height: 400px; width: 100%; border: 1px solid #ccc; }
+        .info { background: #f0f8ff; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .error { background: #ffe6e6; border: 1px solid #ff0000; }
+        .success { background: #e6ffe6; border: 1px solid #00aa00; }
+    </style>
+</head>
+<body>
+    <h1>🗺️ Google Maps API Test</h1>
+    
+    <div id="status" class="info">
+        <h3>🔍 Testing API Key: AIzaSyDdkfFy_y0wAyyxC_ixzniD1vOyWTTvctk</h3>
+        <p>Loading Google Maps...</p>
+    </div>
+    
+    <div id="map"></div>
+    
+    <script>
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        
+        function initMap() {
+            console.log('🗺️ Initializing map...');
+            
+            try {
+                // Create map centered on AE-FUNAI
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: { lat: 6.1378266, lng: 8.1459486 }
+                });
+                
+                // Create directions service
+                directionsService = new google.maps.DirectionsService();
+                directionsRenderer = new google.maps.DirectionsRenderer();
+                directionsRenderer.setMap(map);
+                
+                // Add marker for Computer Science Department
+                new google.maps.Marker({
+                    position: { lat: 6.125396, lng: 8.142920 },
+                    map: map,
+                    title: 'Computer Science Department'
+                });
+                
+                document.getElementById('status').innerHTML = `
+                    <h3 class="success">✅ Google Maps Loaded Successfully!</h3>
+                    <p><strong>API Key:</strong> AIzaSyDdkfFy_y0wAyyxC_ixzniD1vOyWTTvctk</p>
+                    <p><strong>Map Center:</strong> AE-FUNAI Front Gate</p>
+                    <button onclick="testDirections()">🧪 Test Directions API</button>
+                `;
+                
+                console.log('✅ Map initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Map initialization failed:', error);
+                document.getElementById('status').innerHTML = `
+                    <h3 class="error">❌ Map Failed to Load</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+        
+        function testDirections() {
+            console.log('🧪 Testing Directions API...');
+            
+            const request = {
+                origin: { lat: 6.125396, lng: 8.142920 }, // Computer Science
+                destination: { lat: 6.1378266, lng: 8.1459486 }, // Front Gate
+                travelMode: google.maps.TravelMode.WALKING
+            };
+            
+            directionsService.route(request, (result, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(result);
+                    document.getElementById('status').innerHTML += `
+                        <p class="success">✅ Directions API works! Route displayed on map.</p>
+                    `;
+                    console.log('✅ Directions API successful');
+                } else {
+                    document.getElementById('status').innerHTML += `
+                        <p class="error">❌ Directions API failed: ${status}</p>
+                    `;
+                    console.error('❌ Directions API failed:', status);
+                }
+            });
+        }
+        
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('JavaScript Error:', msg, 'at', url, ':', line);
+            document.getElementById('status').innerHTML = `
+                <h3 class="error">❌ JavaScript Error</h3>
+                <p><strong>Error:</strong> ${msg}</p>
+                <p><strong>Location:</strong> ${url}:${line}</p>
+            `;
+        };
+    </script>
+    
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdkfFy_y0wAyyxC_ixzniD1vOyWTTvctk&callback=initMap&libraries=places,geometry">
+    </script>
+</body>
+</html>
