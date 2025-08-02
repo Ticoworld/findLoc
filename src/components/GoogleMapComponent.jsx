@@ -521,48 +521,54 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
       {/* Professional Map Controls - Only show when loaded */}
       {isLoaded && (
         <>
-          {/* Main Control Panel */}
-          <div className="absolute top-4 left-4 flex flex-col space-y-3">
-            {/* Fullscreen Toggle */}
+          {/* Main Control Panel - Simplified for mobile */}
+          <div className="absolute top-4 left-4 flex flex-col space-y-2">
+            {/* Fullscreen Toggle - Always visible */}
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
-              className="group p-3 bg-white/95 hover:bg-white backdrop-blur-sm rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              className="group p-2 lg:p-3 bg-white/95 hover:bg-white backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
               {isFullscreen ? (
-                <FiMinimize2 className="w-5 h-5 text-gray-700 group-hover:text-blue-600" />
+                <FiMinimize2 className="w-4 h-4 lg:w-5 lg:h-5 text-gray-700 group-hover:text-blue-600" />
               ) : (
-                <FiMaximize2 className="w-5 h-5 text-gray-700 group-hover:text-blue-600" />
+                <FiMaximize2 className="w-4 h-4 lg:w-5 lg:h-5 text-gray-700 group-hover:text-blue-600" />
               )}
             </button>
 
-            {/* Map Type Selector */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2">
-              <div className="text-xs font-semibold text-gray-600 mb-2 px-2">Map View</div>
-              <div className="flex flex-col space-y-1">
+            {/* Map Type Selector - Hidden on mobile, compact on tablet */}
+            <div className="hidden md:block bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2">
+              <div className="text-xs font-semibold text-gray-600 mb-2 px-2 hidden lg:block">Map View</div>
+              <div className="flex lg:flex-col space-x-1 lg:space-x-0 lg:space-y-1">
                 <button
                   onClick={() => mapInstanceRef.current?.setMapTypeId(google.maps.MapTypeId.ROADMAP)}
-                  className="px-3 py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+                  className="px-2 py-1 lg:px-3 lg:py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-center lg:text-left"
+                  title="Street View"
                 >
-                  🗺️ Street View
+                  <span className="lg:hidden">🗺️</span>
+                  <span className="hidden lg:inline">🗺️ Street View</span>
                 </button>
                 <button
                   onClick={() => mapInstanceRef.current?.setMapTypeId(google.maps.MapTypeId.SATELLITE)}
-                  className="px-3 py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+                  className="px-2 py-1 lg:px-3 lg:py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-center lg:text-left"
+                  title="Satellite View"
                 >
-                  🛰️ Satellite
+                  <span className="lg:hidden">🛰️</span>
+                  <span className="hidden lg:inline">🛰️ Satellite</span>
                 </button>
                 <button
                   onClick={() => mapInstanceRef.current?.setMapTypeId(google.maps.MapTypeId.HYBRID)}
-                  className="px-3 py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+                  className="px-2 py-1 lg:px-3 lg:py-2 text-xs rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-center lg:text-left"
+                  title="Hybrid View"
                 >
-                  🗺️ Hybrid
+                  <span className="lg:hidden">🗺️</span>
+                  <span className="hidden lg:inline">🗺️ Hybrid</span>
                 </button>
               </div>
             </div>
 
-            {/* Quick Navigation */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2">
+            {/* Quick Navigation - Hidden on small screens */}
+            <div className="hidden lg:block bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2">
               <div className="text-xs font-semibold text-gray-600 mb-2 px-2">Quick Nav</div>
               <div className="flex flex-col space-y-1">
                 <button
@@ -589,35 +595,40 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
             </div>
           </div>
 
-          {/* Legend Panel */}
-          <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 max-w-xs">
-            <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center">
-              <FiLayers className="w-4 h-4 mr-2" />
-              Campus Legend
+          {/* Legend Panel - Much smaller on mobile */}
+          <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2 lg:p-3 max-w-[120px] md:max-w-xs">
+            <div className="text-xs lg:text-sm font-semibold text-gray-800 mb-2 lg:mb-3 flex items-center">
+              <FiLayers className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
+              <span className="hidden sm:inline">Campus Legend</span>
+              <span className="sm:hidden">Legend</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span>Academic</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 lg:gap-2 text-xs">
+              <div className="flex items-center space-x-1 lg:space-x-2">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-blue-500"></div>
+                <span className="hidden sm:inline">Academic</span>
+                <span className="sm:hidden">🏢</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-                <span>Housing</span>
+              <div className="flex items-center space-x-1 lg:space-x-2">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-pink-500"></div>
+                <span className="hidden sm:inline">Housing</span>
+                <span className="sm:hidden">🏠</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span>Medical</span>
+              <div className="flex items-center space-x-1 lg:space-x-2">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-red-500"></div>
+                <span className="hidden sm:inline">Medical</span>
+                <span className="sm:hidden">🏥</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span>Entrance</span>
+              <div className="flex items-center space-x-1 lg:space-x-2">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-green-500"></div>
+                <span className="hidden sm:inline">Entrance</span>
+                <span className="sm:hidden">🚪</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+              <div className="flex items-center space-x-1 lg:space-x-2 hidden sm:flex">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-orange-500"></div>
                 <span>Transport</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+              <div className="flex items-center space-x-1 lg:space-x-2 hidden sm:flex">
+                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-purple-500"></div>
                 <span>Religious</span>
               </div>
             </div>
@@ -625,23 +636,29 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
         </>
       )}
 
-      {/* Enhanced Attribution & Stats - Only show when loaded */}
+      {/* Enhanced Attribution & Stats - Only show when loaded, smaller on mobile */}
       {isLoaded && (
-        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 max-w-sm">
+        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2 lg:p-3 max-w-[200px] sm:max-w-sm">
           <div className="text-xs space-y-1">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-gray-800">🗺️ AE-FUNAI Navigator</span>
-              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">Live</span>
+              <span className="font-semibold text-gray-800 text-xs lg:text-sm">
+                <span className="hidden sm:inline">🗺️ AE-FUNAI Navigator</span>
+                <span className="sm:hidden">🗺️ AE-FUNAI</span>
+              </span>
+              <span className="bg-green-100 text-green-800 px-1 lg:px-2 py-1 rounded-full text-xs font-medium">Live</span>
             </div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 text-xs hidden sm:block">
               📍 {markersRef.current.length} Campus Locations • A* Pathfinding
             </div>
-            <div className="text-gray-500 text-xs">
+            <div className="text-gray-600 text-xs sm:hidden">
+              📍 {markersRef.current.length} Locations
+            </div>
+            <div className="text-gray-500 text-xs hidden lg:block">
               Powered by Google Maps • Real-time Routing
             </div>
             {routeData && (
               <div className="mt-2 pt-2 border-t border-gray-200">
-                <div className="font-medium text-blue-600">Current Route:</div>
+                <div className="font-medium text-blue-600 text-xs">Current Route:</div>
                 <div className="text-xs text-gray-600">
                   📏 {routeData.distance}m • ⏱️ {routeData.duration} min walk
                 </div>
