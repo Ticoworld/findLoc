@@ -42,20 +42,19 @@ A professional, real-time campus navigation system for Alex Ekwueme Federal Univ
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ae-funai-navigator.git
-cd ae-funai-navigator
+git clone https://github.com/Ticoworld/findLoc.git
+cd findLoc
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-cd client_loc
 npm install
 ```
 
 ### 3. Set Up Environment Variables
 
-Create a `.env` file in the `client_loc` directory:
+Create a `.env` file in the root directory:
 
 ```env
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
@@ -130,24 +129,24 @@ Production files will be generated in the `dist/` folder.
 
 ```
 ae-funai-navigator/
-├── client_loc/
-│   ├── src/
-│   │   ├── components/          # React components
-│   │   │   ├── GoogleMapComponent.jsx
-│   │   │   ├── SearchModal.jsx
-│   │   │   └── ...
-│   │   ├── pages/               # Page components
-│   │   │   └── modernHome.jsx
-│   │   ├── utils/               # Utility functions
-│   │   │   ├── googleMapsService.js
-│   │   │   └── ...
-│   │   ├── assets/              # Static assets
-│   │   └── main.jsx             # Entry point
-│   ├── public/                  # Public assets
-│   ├── .env                     # Environment variables
-│   ├── package.json             # Dependencies
-│   └── vite.config.js           # Vite configuration
-└── README.md                    # This file
+├── src/
+│   ├── components/          # React components
+│   │   ├── GoogleMapComponent.jsx
+│   │   ├── SearchModal.jsx
+│   │   └── ...
+│   ├── pages/               # Page components
+│   │   └── modernHome.jsx
+│   ├── utils/               # Utility functions
+│   │   ├── googleMapsService.js
+│   │   └── ...
+│   ├── assets/              # Static assets
+│   └── main.jsx             # Entry point
+├── public/                  # Public assets
+├── .env                     # Environment variables
+├── package.json             # Dependencies
+├── vite.config.js           # Vite configuration
+├── vercel.json              # Vercel deployment config
+└── README.md                # This file
 ```
 
 ## 🔧 Configuration
@@ -184,23 +183,28 @@ The application is fully optimized for mobile devices with:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Vercel (Current Live Deployment)
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Build the project: `npm run build`
-3. Deploy: `vercel --prod`
+Your application is already live on Vercel! Any changes pushed to the main branch will automatically deploy.
 
-### Netlify
+**Live URL**: https://ae-funailocationfinder.vercel.app/
 
-1. Build the project: `npm run build`
-2. Drag and drop the `dist/` folder to Netlify
-3. Add environment variables in Netlify dashboard
+**For new deployments:**
+1. Fork this repository
+2. Connect your fork to Vercel
+3. Add environment variable `VITE_GOOGLE_MAPS_API_KEY` in Vercel dashboard
+4. Deploy automatically on push to main
 
-### GitHub Pages
+### Other Platforms
 
-1. Build the project: `npm run build`
-2. Push `dist/` contents to `gh-pages` branch
-3. Enable GitHub Pages in repository settings
+**Netlify:**
+1. Build: `npm run build`
+2. Deploy `dist/` folder
+3. Add environment variables
+
+**GitHub Pages:**
+1. Build: `npm run build`  
+2. Deploy `dist/` contents to `gh-pages` branch
 
 ## 🔒 Security
 
