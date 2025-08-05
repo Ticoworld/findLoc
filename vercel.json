@@ -1,27 +1,8 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
+    "rewrites": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+            "source": "/(.*)",
+            "destination" : "/"
         }
-      ]
-    }
-  ],
-  "env": {
-    "VITE_GOOGLE_MAPS_API_KEY": "@google_maps_api_key"
-  }
+    ]
 }
