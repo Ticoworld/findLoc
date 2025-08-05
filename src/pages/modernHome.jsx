@@ -335,12 +335,14 @@ const ModernHome = () => {
     };
   }, [userLocation, calculateRoute]);
 
-  // Quick actions - Updated with real campus buildings
+  // Quick actions - Updated with most commonly accessed buildings
   const quickDestinations = [
-    { name: 'Department of Computer Science/Maths & Statistics', icon: '💻', color: 'bg-blue-500' },
-    { name: 'Theater Art Auditorium', icon: '🎭', color: 'bg-green-500' },
-    { name: 'AE-FUNAI Female Hostel', icon: '💜', color: 'bg-purple-500' },
-    { name: 'ICT Building', icon: '📱', color: 'bg-orange-500' },
+    { name: 'ICT Building', icon: '�', color: 'bg-blue-500' },
+    { name: 'University Library', icon: '📚', color: 'bg-green-500' },
+    { name: 'Book Shop', icon: '�', color: 'bg-purple-500' },
+    { name: 'Zenith Bank plc', icon: '🏦', color: 'bg-orange-500' },
+    { name: 'CBT Center', icon: '�', color: 'bg-indigo-500' },
+    { name: 'Convocation Arena', icon: '🏛️', color: 'bg-red-500' },
   ];
 
   return (
@@ -374,12 +376,12 @@ const ModernHome = () => {
                 <span className="hidden sm:block text-sm">Search...</span>
               </button>
 
-              {/* Menu Toggle */}
+              {/* Menu Toggle - Mobile Only */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-1.5 lg:p-2 rounded-lg lg:rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all duration-200"
+                className="lg:hidden p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all duration-200"
               >
-                <FiMenu className="w-4 h-4 lg:w-6 lg:h-6" />
+                <FiMenu className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -437,6 +439,120 @@ const ModernHome = () => {
                     Getting location...
                   </div>
                 )}
+              </div>
+
+              {/* Map View Controls */}
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30">
+                <h3 className="text-white font-semibold mb-2 flex items-center text-sm">
+                  <span className="mr-2">🗺️</span>
+                  Map View
+                </h3>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={() => {
+                      if (window.mapInstanceRef?.current) {
+                        window.mapInstanceRef.current.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-xs bg-blue-500/80 hover:bg-blue-600/80 px-2 py-1.5 rounded transition-colors text-white text-center"
+                  >
+                    Street
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.mapInstanceRef?.current) {
+                        window.mapInstanceRef.current.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-xs bg-blue-500/80 hover:bg-blue-600/80 px-2 py-1.5 rounded transition-colors text-white text-center"
+                  >
+                    Satellite
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.mapInstanceRef?.current) {
+                        window.mapInstanceRef.current.setMapTypeId(google.maps.MapTypeId.HYBRID);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-xs bg-blue-500/80 hover:bg-blue-600/80 px-2 py-1.5 rounded transition-colors text-white text-center"
+                  >
+                    Hybrid
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Navigation */}
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30">
+                <h3 className="text-white font-semibold mb-2 flex items-center text-sm">
+                  <span className="mr-2">🧭</span>
+                  Quick Navigation
+                </h3>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => {
+                      if (window.mapInstanceRef?.current) {
+                        window.mapInstanceRef.current.setCenter({ lat: 6.1378266, lng: 8.1459486 });
+                        window.mapInstanceRef.current.setZoom(16);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-xs bg-green-500/80 hover:bg-green-600/80 px-3 py-2 rounded transition-colors text-white text-left flex items-center"
+                  >
+                    <span className="mr-2">🏛️</span>
+                    Campus Center
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (userLocation && window.mapInstanceRef?.current) {
+                        window.mapInstanceRef.current.setCenter({ lat: userLocation.lat, lng: userLocation.lng });
+                        window.mapInstanceRef.current.setZoom(18);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-xs bg-purple-500/80 hover:bg-purple-600/80 px-3 py-2 rounded transition-colors text-white text-left flex items-center"
+                    disabled={!userLocation}
+                  >
+                    <span className="mr-2">📍</span>
+                    My Location
+                  </button>
+                </div>
+              </div>
+
+              {/* Campus Legend */}
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30">
+                <h3 className="text-white font-semibold mb-2 flex items-center text-sm">
+                  <span className="mr-2">🗺️</span>
+                  Campus Legend
+                </h3>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span className="text-white">Academic</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
+                    <span className="text-white">Housing</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span className="text-white">Medical</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-white">Entrance</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-teal-500"></div>
+                    <span className="text-white">Transport</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <span className="text-white">Religious</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

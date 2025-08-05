@@ -48,6 +48,11 @@ const SearchModal = ({ isOpen, onClose, destinations, onSelect, userLocation }) 
     if (name.includes('Student')) return '🎓';
     if (name.includes('Sports')) return '🏃‍♂️';
     if (name.includes('Admin')) return '🏛️';
+    if (name.includes('Book Shop')) return '📖';
+    if (name.includes('Bank')) return '🏦';
+    if (name.includes('CBT')) return '💻';
+    if (name.includes('Convocation')) return '🏛️';
+    if (name.includes('Arena')) return '🏛️';
 
     return iconMap[type] || '📍';
   };

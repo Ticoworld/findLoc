@@ -36,13 +36,13 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
       `),
       'hostel': 'data:image/svg+xml;base64,' + btoa(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="22" fill="#BE185D" stroke="#ffffff" stroke-width="3"/>
+          <circle cx="24" cy="24" r="22" fill="#6366F1" stroke="#ffffff" stroke-width="3"/>
           <path d="M16 35h16v-8l-8-6-8 6v8z" fill="white"/>
           <path d="M12 27l12-9 12 9h-2v-2l-10-7.5L14 25v2h-2z" fill="white"/>
-          <rect x="20" y="29" width="3" height="6" fill="#BE185D"/>
-          <rect x="25" y="29" width="3" height="6" fill="#BE185D"/>
-          <rect x="18" y="25" width="3" height="3" fill="#BE185D"/>
-          <rect x="27" y="25" width="3" height="3" fill="#BE185D"/>
+          <rect x="20" y="29" width="3" height="6" fill="#6366F1"/>
+          <rect x="25" y="29" width="3" height="6" fill="#6366F1"/>
+          <rect x="18" y="25" width="3" height="3" fill="#6366F1"/>
+          <rect x="27" y="25" width="3" height="3" fill="#6366F1"/>
         </svg>
       `),
       'medical': 'data:image/svg+xml;base64,' + btoa(`
@@ -62,9 +62,9 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
       `),
       'transport': 'data:image/svg+xml;base64,' + btoa(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="22" fill="#F59E0B" stroke="#ffffff" stroke-width="3"/>
+          <circle cx="24" cy="24" r="22" fill="#14B8A6" stroke="#ffffff" stroke-width="3"/>
           <rect x="14" y="18" width="20" height="12" rx="2" fill="white"/>
-          <rect x="16" y="20" width="16" height="8" rx="1" fill="#F59E0B"/>
+          <rect x="16" y="20" width="16" height="8" rx="1" fill="#14B8A6"/>
           <circle cx="18" cy="32" r="2" fill="white"/>
           <circle cx="30" cy="32" r="2" fill="white"/>
           <rect x="16" y="22" width="4" height="4" fill="white"/>
@@ -323,6 +323,9 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
 
         mapInstanceRef.current = map;
 
+        // Make map instance accessible globally for menu controls
+        window.mapInstanceRef = mapInstanceRef;
+
         // Close all info windows when clicking on the map
         map.addListener('click', () => {
           markersRef.current.forEach(marker => {
@@ -536,9 +539,9 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
               )}
             </button>
 
-            {/* Map Type Selector - Hidden on mobile, compact on tablet */}
-            <div className="hidden md:block bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2">
-              <div className="text-xs font-semibold text-gray-600 mb-2 px-2 hidden lg:block">Map View</div>
+            {/* Map Type Selector - Desktop Only (hidden on mobile/tablet) */}
+            <div className="hidden lg:block bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2">
+              <div className="text-xs font-semibold text-gray-600 mb-2 px-2">Map View</div>
               <div className="flex lg:flex-col space-x-1 lg:space-x-0 lg:space-y-1">
                 <button
                   onClick={() => mapInstanceRef.current?.setMapTypeId(google.maps.MapTypeId.ROADMAP)}
@@ -567,7 +570,7 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
               </div>
             </div>
 
-            {/* Quick Navigation - Hidden on small screens */}
+            {/* Quick Navigation - Desktop Only (hidden on mobile/tablet) */}
             <div className="hidden lg:block bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-2">
               <div className="text-xs font-semibold text-gray-600 mb-2 px-2">Quick Nav</div>
               <div className="flex flex-col space-y-1">
@@ -595,40 +598,35 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
             </div>
           </div>
 
-          {/* Legend Panel - Much smaller on mobile */}
-          <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg lg:rounded-xl shadow-lg p-2 lg:p-3 max-w-[120px] md:max-w-xs">
-            <div className="text-xs lg:text-sm font-semibold text-gray-800 mb-2 lg:mb-3 flex items-center">
-              <FiLayers className="w-3 h-3 lg:w-4 lg:h-4 mr-1 lg:mr-2" />
-              <span className="hidden sm:inline">Campus Legend</span>
-              <span className="sm:hidden">Legend</span>
+          {/* Legend Panel - Desktop Only (hidden on mobile, now in menu) */}
+          <div className="hidden lg:block absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3">
+            <div className="text-sm font-semibold text-gray-800 mb-3 flex items-center">
+              <FiLayers className="w-4 h-4 mr-2" />
+              Campus Legend
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 lg:gap-2 text-xs">
-              <div className="flex items-center space-x-1 lg:space-x-2">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-blue-500"></div>
-                <span className="hidden sm:inline">Academic</span>
-                <span className="sm:hidden">🏢</span>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span>Academic</span>
               </div>
-              <div className="flex items-center space-x-1 lg:space-x-2">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-pink-500"></div>
-                <span className="hidden sm:inline">Housing</span>
-                <span className="sm:hidden">🏠</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
+                <span>Housing</span>
               </div>
-              <div className="flex items-center space-x-1 lg:space-x-2">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-red-500"></div>
-                <span className="hidden sm:inline">Medical</span>
-                <span className="sm:hidden">🏥</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <span>Medical</span>
               </div>
-              <div className="flex items-center space-x-1 lg:space-x-2">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-green-500"></div>
-                <span className="hidden sm:inline">Entrance</span>
-                <span className="sm:hidden">🚪</span>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span>Entrance</span>
               </div>
-              <div className="flex items-center space-x-1 lg:space-x-2 hidden sm:flex">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-orange-500"></div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-teal-500"></div>
                 <span>Transport</span>
               </div>
-              <div className="flex items-center space-x-1 lg:space-x-2 hidden sm:flex">
-                <div className="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-purple-500"></div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                 <span>Religious</span>
               </div>
             </div>

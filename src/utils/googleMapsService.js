@@ -64,6 +64,8 @@ const CAMPUS_BUILDINGS = [
   { name: 'SIWES Building', lat: 6.133552, lng: 8.141688, type: 'building' },
   { name: 'ICT Building', lat: 6.126698976719969, lng: 8.143381733833069, type: 'building' },
   { name: 'Book Shop', lat: 6.133101, lng: 8.142301, type: 'building' },
+  { name: 'University Library', lat: 6.125918711271787, lng: 8.14575241240812, type: 'building' },
+  { name: 'Convocation Arena', lat: 6.126729446109337, lng: 8.146546346189183, type: 'venue' },
   
   // Student Housing
   { name: 'AE-FUNAI Female Hostel', lat: 6.128525844301733, lng: 8.145583953719655, type: 'hostel' },
