@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiMapPin, FiNavigation, FiMenu, FiUser, FiClock } from 'react-icons/fi';
+import { FiSearch, FiMapPin, FiNavigation, FiMenu, FiUser, FiClock, FiSettings } from 'react-icons/fi';
 import { findOptimalRoute, getCampusDestinations } from '../utils/googleMapsService';
 import GoogleMapComponent from '../components/GoogleMapComponent';
 import SearchModal from '../components/SearchModal';
@@ -7,6 +7,9 @@ import RouteInfo from '../components/RouteInfo';
 import RoutePlanningPanel from '../components/RoutePlanningPanel';
 import NotificationSystem from '../components/NotificationSystem';
 import LocationAccuracyHelper from '../components/LocationAccuracyHelper';
+import AuthModal from '../components/AuthModal';
+import PreferencesModal from '../components/PreferencesModal';
+import RouteMethodIndicator from '../components/RouteMethodIndicator';
 import { useNotifications } from '../hooks/useNotifications';
 import '../utils/apiDebug'; // Import debug utility
 
@@ -20,6 +23,10 @@ const ModernHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
   const [showLocationHelper, setShowLocationHelper] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
+  const [routeInfo, setRouteInfo] = useState(null);
   
   // Notification system
   const {
@@ -37,6 +44,24 @@ const ModernHome = () => {
   // Ref to prevent multiple location requests
   const locationRequestedRef = useRef(false);
   const initialLoadRef = useRef(false);
+
+  // Check for existing user session on mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('findloc.user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        localStorage.removeItem('findloc.user');
+        localStorage.removeItem('findloc.token');
+      }
+    }
+  }, []);
+
+  const handleAuthSuccess = (userData) => {
+    setUser(userData);
+    showSuccess('Welcome!', `Signed in as ${userData.displayName || userData.email}`, { duration: 3000 });
+  };
 
   // Enhanced location detection with multiple strategies
   const requestLocation = useCallback((isManual = false) => {
@@ -250,6 +275,7 @@ const ModernHome = () => {
 
       setRouteData(route);
       setSelectedDestination(destination);
+      setRouteInfo({ method: route.method || 'google' });
 
       // Show success notification
       showSuccess(
@@ -364,6 +390,25 @@ const ModernHome = () => {
 
             {/* Mobile Action Buttons */}
             <div className="flex items-center space-x-2">
+              {/* User/Auth Button */}
+              {user ? (
+                <button
+                  onClick={() => setIsPreferencesOpen(true)}
+                  className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 rounded-lg px-2 lg:px-3 py-1.5 lg:py-2 text-white transition-all duration-200"
+                >
+                  <FiUser className="w-4 h-4" />
+                  <span className="hidden sm:block text-sm">{user.displayName || 'Profile'}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 rounded-lg px-2 lg:px-3 py-1.5 lg:py-2 text-white transition-all duration-200"
+                >
+                  <FiUser className="w-4 h-4" />
+                  <span className="hidden sm:block text-sm">Sign In</span>
+                </button>
+              )}
+
               {/* Search Button - Compact for Mobile */}
               <button
                 onClick={() => {
@@ -438,6 +483,43 @@ const ModernHome = () => {
                     <div className="animate-spin rounded-full h-3 w-3 border-2 border-blue-400 border-t-transparent mr-2"></div>
                     Getting location...
                   </div>
+                )}
+              </div>
+
+              {/* User Account */}
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/30">
+                <h3 className="text-white font-semibold mb-2 flex items-center text-sm">
+                  <FiUser className="w-4 h-4 mr-2" />
+                  Account
+                </h3>
+                {user ? (
+                  <div className="space-y-2">
+                    <p className="text-white text-sm">{user.displayName || 'Campus Navigator'}</p>
+                    <p className="text-white/70 text-xs">{user.email}</p>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          setIsPreferencesOpen(true);
+                          setIsMenuOpen(false);
+                        }}
+                        className="text-xs bg-purple-500/80 hover:bg-purple-600/80 px-2 py-1.5 rounded transition-colors text-white flex items-center space-x-1"
+                      >
+                        <FiSettings className="w-3 h-3" />
+                        <span>Preferences</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setIsAuthOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-xs bg-blue-500/80 hover:bg-blue-600/80 px-3 py-2 rounded transition-colors text-white text-left flex items-center"
+                  >
+                    <FiUser className="w-4 h-4 mr-2" />
+                    Sign In / Register
+                  </button>
                 )}
               </div>
 
@@ -563,6 +645,68 @@ const ModernHome = () => {
       <div className="relative h-[calc(100vh-3rem)] lg:h-[calc(100vh-4rem)]">
         {/* Desktop Sidebar - Hidden on Mobile */}
         <div className="hidden lg:block w-80 bg-white/10 backdrop-blur-lg border-r border-white/20 p-6 overflow-y-auto absolute left-0 top-0 bottom-0 z-10">
+          {/* User Section */}
+          {user ? (
+            <div className="mb-6">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 border border-white/30">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <FiUser className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold">{user.displayName || 'Campus Navigator'}</h3>
+                    <p className="text-white/70 text-sm">{user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsPreferencesOpen(true)}
+                  className="w-full text-sm bg-purple-500/80 hover:bg-purple-600/80 px-3 py-2 rounded-lg transition-colors text-white flex items-center justify-center space-x-2"
+                >
+                  <FiSettings className="w-4 h-4" />
+                  <span>Preferences & History</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-6">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 border border-white/30">
+                <h3 className="text-white font-semibold mb-2">Welcome to AE-FUNAI Navigator</h3>
+                <p className="text-white/70 text-sm mb-3">Sign in to save preferences and route history</p>
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="w-full text-sm bg-blue-500/80 hover:bg-blue-600/80 px-3 py-2 rounded-lg transition-colors text-white flex items-center justify-center space-x-2"
+                >
+                  <FiUser className="w-4 h-4" />
+                  <span>Sign In / Register</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Search Section */}
+          <div className="mb-6">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 border border-white/30">
+              <h3 className="text-white font-bold mb-3 text-lg">Find Your Destination</h3>
+              <div className="space-y-3">
+                <button
+                  onClick={() => setIsSearchOpen(true)}
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 px-4 py-3 rounded-lg transition-all text-white font-semibold shadow-lg transform hover:scale-105 flex items-center space-x-2"
+                >
+                  <FiSearch className="w-5 h-5" />
+                  <span>Search Campus Locations</span>
+                </button>
+                
+                {/* Route Method Indicator */}
+                {routeInfo && <RouteMethodIndicator method={routeInfo.method} />}
+                
+                <div className="text-white/80 text-sm">
+                  <p className="mb-1">🎯 Shortcut-aware campus routing</p>
+                  <p>🗺️ Google Maps fallback available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Current Location */}
           <div className="mb-6">
             <h2 className="text-white font-semibold mb-3 flex items-center">
@@ -846,6 +990,20 @@ const ModernHome = () => {
       <LocationAccuracyHelper
         isOpen={showLocationHelper}
         onClose={() => setShowLocationHelper(false)}
+      />
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
+
+      {/* Preferences Modal */}
+      <PreferencesModal
+        isOpen={isPreferencesOpen}
+        onClose={() => setIsPreferencesOpen(false)}
+        user={user}
       />
     </div>
   );

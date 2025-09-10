@@ -118,12 +118,6 @@ Production files will be generated in the `dist/` folder.
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 19.0.0 with Hooks
-- **Build Tool**: Vite 6.3.5
-- **Styling**: Tailwind CSS 3.4.5
-- **Maps**: Google Maps JavaScript API
-- **Icons**: React Icons (Feather)
-- **HTTP Client**: @googlemaps/js-api-loader
 
 ## 📁 Project Structure
 
@@ -148,6 +142,12 @@ ae-funai-navigator/
 ├── vercel.json              # Vercel deployment config
 └── README.md                # This file
 ```
+
+
+## Campus A* Shortcuts and Backend
+
+- Shortcut-aware A* pathfinding is enabled using a campus graph. See `docs/CAMPUS_SHORTCUTS.md` for how to add nodes/edges and map new shortcuts.
+- Optional Express + MongoDB backend scaffold is available under `server/`. See `server/README.md` and `docs/BACKEND.md` for setup and API info.
 
 ## 🔧 Configuration
 

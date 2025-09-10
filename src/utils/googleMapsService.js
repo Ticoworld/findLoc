@@ -10,84 +10,15 @@
  */
 
 import { Loader } from '@googlemaps/js-api-loader';
+import { loadCampusGraph, loadCampusBuildings } from './campusGraphService';
+import { getCampusBuildings as getCampusBuildingsSync } from '../data/campusShortcuts';
+import { computeCampusRoute } from './aStarPathfinding';
+import { dataStore } from './dataStore';
 
 // Your Google Maps API Key
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDdkfFy_y0wAyyxC_ixzniD1vOyWTTvctk';
 
-// AE-FUNAI Campus Buildings - ALL your real coordinates
-const CAMPUS_BUILDINGS = [
-  // Main Campus Gates and Entry Points
-  { name: 'Front Gate', lat: 6.1378266, lng: 8.1459486, type: 'entrance' },
-  { name: 'Back Gate', lat: 6.132435, lng: 8.140433, type: 'entrance' },
-  
-  // Administrative & Service Buildings
-  { name: 'Security Officer Building', lat: 6.137497, lng: 8.145524, type: 'building' },
-  { name: 'SUG Office', lat: 6.132918, lng: 8.140519, type: 'building' },
-  { name: 'Works Department', lat: 6.133191, lng: 8.141284, type: 'building' },
-  { name: 'Funai Park (Bus)', lat: 6.137149, lng: 8.145532, type: 'transport' },
-  { name: 'Funai Park (Shuttle)', lat: 6.137131, lng: 8.145387, type: 'transport' },
-  
-  // Religious & Cultural Centers
-  { name: 'Holy Family Chaplaincy, AE-FUNAI', lat: 6.137353964150157, lng: 8.144483511178525, type: 'religious' },
-  { name: 'Olaudah Equiano Igbo Center', lat: 6.134701, lng: 8.143127, type: 'cultural' },
-  { name: 'Igbo Center Iruka', lat: 6.134653, lng: 8.14820, type: 'cultural' },
-  
-  // Academic Buildings - Arts & Theater
-  { name: 'Theater Art Auditorium', lat: 6.135108672026378, lng: 8.144373553286792, type: 'building' },
-  { name: 'Fine and Applied Art Studio', lat: 6.133271, lng: 8.140869, type: 'building' },
-  { name: 'Department of Fine and Applied Arts', lat: 6.133452, lng: 8.143002, type: 'building' },
-  { name: 'Department of Mass Communication', lat: 6.132973, lng: 8.140923, type: 'building' },
-  { name: 'Music Department', lat: 6.132906, lng: 8.140496, type: 'building' },
-  
-  // Academic Buildings - Science
-  { name: 'AE-FUNAI Physics Lab', lat: 6.133818, lng: 8.141920, type: 'building' },
-  { name: 'AE-FUNAI Chemistry Lab', lat: 6.133896, lng: 8.141865, type: 'building' },
-  { name: 'AE-FUNAI Biology Laboratory', lat: 6.134012, lng: 8.141812, type: 'building' },
-  { name: 'Animal House', lat: 6.134026, lng: 8.141768, type: 'building' },
-  { name: 'Department of Biology', lat: 6.127354, lng: 8.142937, type: 'building' },
-  { name: 'Department of Computer Science/Maths & Statistics', lat: 6.125396, lng: 8.142920, type: 'building' },
-  { name: 'Physical Science Audit', lat: 6.125558, lng: 8.142620, type: 'building' },
-  
-  // Academic Buildings - Social Sciences
-  { name: 'Department of Psychology', lat: 6.133471, lng: 8.141609, type: 'building' },
-  { name: 'Department of Criminology & Political Science/Environmental Sciences', lat: 6.133380, lng: 8.141407, type: 'building' },
-  { name: 'Department of Economics/Sociology', lat: 6.132963, lng: 8.142048, type: 'building' },
-  { name: 'Faculty of Management Sciences', lat: 6.132162, lng: 8.140257, type: 'building' },
-  
-  // Academic Blocks
-  { name: 'A Block', lat: 6.133601, lng: 8.143317, type: 'building' },
-  { name: 'C Block', lat: 6.133221, lng: 8.142492, type: 'building' },
-  { name: 'Prof Eni Njoku Block (Parents Forum)', lat: 6.127455, lng: 8.143527, type: 'building' },
-  
-  // Educational Support & Technology
-  { name: 'CBT Center', lat: 6.133791, lng: 8.141835, type: 'building' },
-  { name: 'SIWES Building', lat: 6.133552, lng: 8.141688, type: 'building' },
-  { name: 'ICT Building', lat: 6.126698976719969, lng: 8.143381733833069, type: 'building' },
-  { name: 'Book Shop', lat: 6.133101, lng: 8.142301, type: 'building' },
-  { name: 'University Library', lat: 6.125918711271787, lng: 8.14575241240812, type: 'building' },
-  { name: 'Convocation Arena', lat: 6.126729446109337, lng: 8.146546346189183, type: 'venue' },
-  
-  // Student Housing
-  { name: 'AE-FUNAI Female Hostel', lat: 6.128525844301733, lng: 8.145583953719655, type: 'hostel' },
-  { name: 'Hostel C', lat: 6.128943, lng: 8.143880, type: 'hostel' },
-  { name: 'Texas Lodge', lat: 6.135483, lng: 8.143822, type: 'hostel' },
-  
-  // Medical Facilities
-  { name: 'Hon. Chike Okafor Medical Centre', lat: 6.128281, lng: 8.149163, type: 'medical' },
-  { name: 'X-ray Clinic', lat: 6.128693, lng: 8.148842, type: 'medical' },
-  
-  // Recreation & Sports
-  { name: 'Football Field', lat: 6.133069, lng: 8.142809, type: 'recreation' },
-  { name: 'Volleyball Court', lat: 6.132576, lng: 8.141558, type: 'recreation' },
-  { name: 'University Auditorium', lat: 6.132478, lng: 8.140801, type: 'venue' },
-  
-  // Commercial & Services
-  { name: 'Nice Cool Garden Beverages and Snacks', lat: 6.133917, lng: 8.142180, type: 'commercial' },
-  { name: 'Funai Outlook Limited', lat: 6.132979, lng: 8.140675, type: 'commercial' },
-  { name: 'Tastia Restaurant and Bakery (Vegas)', lat: 6.128612, lng: 8.143088, type: 'commercial' },
-  { name: 'Zenith Bank plc', lat: 6.134440338343271, lng: 8.142534048441526, type: 'commercial' },
-  { name: 'Former RC', lat: 6.135006, lng: 8.143516, type: 'building' },
-];
+// Buildings list is provided by campusGraphService (single source of truth)
 
 class GoogleMapsService {
   constructor() {
@@ -98,6 +29,13 @@ class GoogleMapsService {
       version: 'weekly',
       libraries: ['places', 'geometry']
     });
+    // Preload buildings cache synchronously for UI markers/search
+  try {
+      const b = getCampusBuildingsSync();
+      this._buildingsCache = b.map(x => ({ name: x.name, lat: x.lat, lng: x.lng, type: x.type }));
+  } catch {
+      this._buildingsCache = [];
+    }
   }
 
   // Initialize Google Maps API
@@ -157,7 +95,13 @@ class GoogleMapsService {
     let nearest = null;
     let minDistance = Infinity;
     
-    CAMPUS_BUILDINGS.forEach(building => {
+  // For nearest, use dynamic buildings list
+  // NOTE: This method remains for legacy/visualization; A* will be used first.
+  // We'll load buildings for nearest computation.
+  // This function is synchronous; we rely on previously loaded buildings if needed.
+  // In practice, findOptimalRoute uses A* path.
+  this._buildingsCache = this._buildingsCache || [];
+  this._buildingsCache.forEach(building => {
       const distance = this.calculateDistance(lat, lng, building.lat, building.lng);
       if (distance < minDistance) {
         minDistance = distance;
@@ -180,11 +124,11 @@ class GoogleMapsService {
     // Add major campus waypoints for logical routing
     const majorWaypoints = [
       // Main circulation points
-      CAMPUS_BUILDINGS.find(b => b.name === 'Front Gate'),
-      CAMPUS_BUILDINGS.find(b => b.name === 'Security Officer Building'),
-      CAMPUS_BUILDINGS.find(b => b.name === 'Central Campus Junction') || 
-        CAMPUS_BUILDINGS.find(b => b.name === 'A Block'), // Use A Block as central point
-      CAMPUS_BUILDINGS.find(b => b.name === 'University Auditorium'),
+      this._buildingsCache.find(b => b.name === 'Front Gate'),
+      this._buildingsCache.find(b => b.name === 'Security Officer Building'),
+      this._buildingsCache.find(b => b.name === 'Central Campus Junction') || 
+        this._buildingsCache.find(b => b.name === 'A Block'), // Use A Block as central point
+      this._buildingsCache.find(b => b.name === 'University Auditorium'),
     ].filter(Boolean);
     
     // Find logical intermediate waypoint
@@ -338,24 +282,38 @@ class GoogleMapsService {
     console.log('🚀 Starting hybrid routing...');
     
     try {
-      // First: Try smart campus routing (always works, no API needed)
-      const campusRoute = this.findCampusRoute(startLat, startLng, goalLat, goalLng);
-      
-      // If route is short distance, campus routing is probably sufficient
-      if (campusRoute.distance < 500) {
-        console.log('✅ Using campus route (short distance)');
-        return campusRoute;
+      // First: Try Campus A* pathfinding using the custom graph
+      try {
+        const graph = await loadCampusGraph();
+        // Preload buildings cache for legacy helpers
+        this._buildingsCache = (await loadCampusBuildings()).map(b => ({ name: b.name, lat: b.lat, lng: b.lng, type: b.type }));
+
+        const aStarRoute = computeCampusRoute({
+          start: { lat: startLat, lng: startLng },
+          goal: { lat: goalLat, lng: goalLng },
+          graph,
+          preferences: { speedMetersPerMin: 80 }
+        });
+  console.log('✅ Using Campus A* route');
+  try { dataStore.saveRouteHistory({ destination: 'Custom', routeSummary: { distance: aStarRoute.distance, duration: aStarRoute.duration, method: 'Campus A*' } }); } catch { void 0; }
+  return aStarRoute;
+      } catch (aStarError) {
+        console.log('ℹ️ Campus A* not available or failed, trying Google Maps:', aStarError.message);
       }
-      
-      // For longer routes, try Google Maps for more detailed directions
+
+      // Then: try Google Maps for detailed directions
       try {
         await this.initialize();
         const googleRoute = await this.getGoogleMapsRoute(startLat, startLng, goalLat, goalLng);
-        console.log('✅ Using Google Maps route (detailed routing)');
+  console.log('✅ Using Google Maps route (detailed routing)');
+  try { dataStore.saveRouteHistory({ destination: 'Custom', routeSummary: { distance: googleRoute.distance, duration: googleRoute.duration, method: 'Google Maps' } }); } catch { void 0; }
         return googleRoute;
       } catch (error) {
-        console.log('⚠️ Google Maps failed, using campus route as fallback:', error.message);
-        return campusRoute;
+        console.log('⚠️ Google Maps failed, attempting basic campus fallback:', error.message);
+        // Last resort: basic heuristic campus route for visualization
+        const campusFallback = this.findCampusRoute(startLat, startLng, goalLat, goalLng);
+  try { dataStore.saveRouteHistory({ destination: 'Custom', routeSummary: { distance: campusFallback.distance, duration: campusFallback.duration, method: 'Smart Campus Routing' } }); } catch { void 0; }
+        return campusFallback;
       }
       
     } catch (error) {
@@ -470,7 +428,8 @@ class GoogleMapsService {
 
   // Get all campus destinations - include ALL types for comprehensive search
   getCampusDestinations() {
-    return CAMPUS_BUILDINGS
+  const list = this._buildingsCache && this._buildingsCache.length ? this._buildingsCache : [];
+  return list
       .map(building => ({
         name: building.name,
         lat: building.lat,
@@ -482,7 +441,7 @@ class GoogleMapsService {
 
   // Get all buildings for map display
   getAllBuildings() {
-    return CAMPUS_BUILDINGS;
+  return this._buildingsCache && this._buildingsCache.length ? this._buildingsCache : [];
   }
 }
 

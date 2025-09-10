@@ -33,4 +33,21 @@ export default [
       ],
     },
   },
+  // Node-specific settings for backend server files
+  {
+    files: ['server/**/*.{js}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node
+      },
+      parserOptions: {
+        sourceType: 'module'
+      }
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^[A-Z_]' }]
+    }
+  }
 ]

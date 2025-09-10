@@ -10,6 +10,7 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(null);
   const directionsRendererRef = useRef(null);
+  const customPolylineRef = useRef(null);
   const markersRef = useRef([]);
 
   // Google Maps API Key from environment
@@ -429,11 +430,37 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
 
   // Update route display
   useEffect(() => {
-    if (!mapInstanceRef.current || !routeData || !isLoaded || !directionsRendererRef.current) return;
+    if (!mapInstanceRef.current || !isLoaded) return;
+
+    // Clear existing custom polyline
+    if (customPolylineRef.current) {
+      customPolylineRef.current.setMap(null);
+      customPolylineRef.current = null;
+    }
+
+    if (!routeData || !directionsRendererRef.current) return;
 
     try {
-      // Use Google's original response if available
-      if (routeData.googleResponse) {
+      if (routeData.isCampusRoute) {
+        // Draw custom polyline following the A* path
+        const path = routeData.path.map(p => ({ lat: p.lat, lng: p.lng }));
+        const poly = new google.maps.Polyline({
+          path,
+          geodesic: true,
+          strokeColor: '#10B981', // emerald for campus
+          strokeOpacity: 0.9,
+          strokeWeight: 5
+        });
+        poly.setMap(mapInstanceRef.current);
+        customPolylineRef.current = poly;
+
+        // Fit bounds
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach(pt => bounds.extend(pt));
+        mapInstanceRef.current.fitBounds(bounds, 60);
+        // Clear any Google directions overlay
+        directionsRendererRef.current.set('directions', null);
+      } else if (routeData.googleResponse) {
         directionsRendererRef.current.setDirections({
           routes: [routeData.googleResponse],
           request: {
@@ -443,16 +470,12 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
           }
         });
       } else {
-        // Fallback: create route from path points
-        const path = routeData.path.map(point => ({
-          lat: point.lat,
-          lng: point.lng
-        }));
-
+        // As a last resort, request a Google route between endpoints
+        const points = routeData.path.map(p => ({ lat: p.lat, lng: p.lng }));
         const directionsService = new google.maps.DirectionsService();
         directionsService.route({
-          origin: path[0],
-          destination: path[path.length - 1],
+          origin: points[0],
+          destination: points[points.length - 1],
           travelMode: google.maps.TravelMode.WALKING,
           unitSystem: google.maps.UnitSystem.METRIC
         }, (response, status) => {
