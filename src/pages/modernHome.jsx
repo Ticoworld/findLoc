@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FiSearch, FiMapPin, FiNavigation, FiMenu, FiUser, FiClock, FiSettings } from 'react-icons/fi';
-import { findOptimalRoute, getCampusDestinations } from '../utils/googleMapsService';
+import { findOptimalRoute } from '../utils/googleMapsService';
+import { loadCampusBuildings } from '../utils/campusGraphService';
 import GoogleMapComponent from '../components/GoogleMapComponent';
 import SearchModal from '../components/SearchModal';
 import RouteInfo from '../components/RouteInfo';
@@ -19,7 +20,7 @@ const ModernHome = () => {
   const [routeData, setRouteData] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [destinations] = useState(getCampusDestinations());
+  const [destinations, setDestinations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
   const [showLocationHelper, setShowLocationHelper] = useState(false);
@@ -56,11 +57,26 @@ const ModernHome = () => {
         localStorage.removeItem('findloc.token');
       }
     }
+    // Load destinations from API/graph
+    (async () => {
+      try {
+        const list = await loadCampusBuildings();
+        setDestinations(list);
+      } catch (e) {
+        console.warn('Could not load campus buildings (likely unauthenticated):', e.message);
+      }
+    })();
+    // Listen for auth required to reopen auth modal
+    const onAuthRequired = () => setIsAuthOpen(true);
+    window.addEventListener('auth:required', onAuthRequired);
+    return () => window.removeEventListener('auth:required', onAuthRequired);
   }, []);
 
   const handleAuthSuccess = (userData) => {
     setUser(userData);
     showSuccess('Welcome!', `Signed in as ${userData.displayName || userData.email}`, { duration: 3000 });
+  // Reload destinations now that we have auth
+  loadCampusBuildings().then(setDestinations).catch(() => {});
   };
 
   // Enhanced location detection with multiple strategies

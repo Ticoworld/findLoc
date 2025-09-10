@@ -11,7 +11,7 @@ function requireAdmin(req, res, next) {
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', requireAuth, async (_req, res) => {
   const nodes = await Node.find({}).lean();
   const edges = await Edge.find({}).lean();
   return res.json({ nodes, edges });

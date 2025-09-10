@@ -12,7 +12,15 @@ export async function apiGet(path) {
   const res = await fetch(`${BASE_URL}${path}`, {
     headers: { 'Content-Type': 'application/json', ...getAuthHeader() }
   });
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      window.dispatchEvent(new CustomEvent('auth:required', { detail: { path } }));
+    }
+    const text = await res.text().catch(() => '');
+    const err = new Error(`GET ${path} failed: ${res.status} ${text}`);
+    err.status = res.status;
+    throw err;
+  }
   return res.json();
 }
 
@@ -23,7 +31,15 @@ export async function apiPost(path, body) {
     headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
     body: JSON.stringify(body)
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      window.dispatchEvent(new CustomEvent('auth:required', { detail: { path } }));
+    }
+    const text = await res.text().catch(() => '');
+    const err = new Error(`POST ${path} failed: ${res.status} ${text}`);
+    err.status = res.status;
+    throw err;
+  }
   return res.json();
 }
 
@@ -34,6 +50,14 @@ export async function apiPut(path, body) {
     headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
     body: JSON.stringify(body)
   });
-  if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      window.dispatchEvent(new CustomEvent('auth:required', { detail: { path } }));
+    }
+    const text = await res.text().catch(() => '');
+    const err = new Error(`PUT ${path} failed: ${res.status} ${text}`);
+    err.status = res.status;
+    throw err;
+  }
   return res.json();
 }

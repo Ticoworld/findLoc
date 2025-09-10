@@ -267,3 +267,20 @@ For support, email: [your-email@example.com](mailto:your-email@example.com)
 **Made with ❤️ for AE-FUNAI Community**
 
 🗺️ **Navigate Smart, Study Better!**
+
+---
+
+## 🔐 Authentication Gating & Graph Data Flow
+
+- The campus map and routing are accessible only after sign-in.
+- Frontend: `src/App.jsx` wraps routes in a ProtectedRoute that redirects to `/login` (see `src/pages/AuthGate.jsx`).
+- On 401/403 from API, the client emits a global `auth:required` event that opens the login flow.
+- Buildings and A* graph load from `/api/graph` via `src/utils/campusGraphService.js` (JWT required). Local seeds are used only in development without an API.
+
+### Adding new nodes so they show up
+
+1. Authenticate as admin and POST to backend:
+   - `POST /api/graph/nodes` with `{ nodeId, name, lat, lng, type, metadata? }`
+   - `POST /api/graph/edges` with `{ edgeId, from, to, bidirectional?, weightMeters?, attributes? }`
+2. Reload the app; markers are created for nodes where `type === 'building'`.
+3. A* will include new nodes in routing once connected by edges.

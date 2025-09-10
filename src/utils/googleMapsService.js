@@ -11,7 +11,6 @@
 
 import { Loader } from '@googlemaps/js-api-loader';
 import { loadCampusGraph, loadCampusBuildings } from './campusGraphService';
-import { getCampusBuildings as getCampusBuildingsSync } from '../data/campusShortcuts';
 import { computeCampusRoute } from './aStarPathfinding';
 import { dataStore } from './dataStore';
 
@@ -29,13 +28,8 @@ class GoogleMapsService {
       version: 'weekly',
       libraries: ['places', 'geometry']
     });
-    // Preload buildings cache synchronously for UI markers/search
-  try {
-      const b = getCampusBuildingsSync();
-      this._buildingsCache = b.map(x => ({ name: x.name, lat: x.lat, lng: x.lng, type: x.type }));
-  } catch {
-      this._buildingsCache = [];
-    }
+  // Initialize empty; will be filled from API when available
+  this._buildingsCache = [];
   }
 
   // Initialize Google Maps API
@@ -285,8 +279,12 @@ class GoogleMapsService {
       // First: Try Campus A* pathfinding using the custom graph
       try {
         const graph = await loadCampusGraph();
-        // Preload buildings cache for legacy helpers
-        this._buildingsCache = (await loadCampusBuildings()).map(b => ({ name: b.name, lat: b.lat, lng: b.lng, type: b.type }));
+        // Load buildings from API for search/legacy helpers
+        try {
+          this._buildingsCache = (await loadCampusBuildings()).map(b => ({ name: b.name, lat: b.lat, lng: b.lng, type: b.type }));
+        } catch (e) {
+          console.warn('Buildings load failed; A* may still work if graph loaded:', e.message);
+        }
 
         const aStarRoute = computeCampusRoute({
           start: { lat: startLat, lng: startLng },

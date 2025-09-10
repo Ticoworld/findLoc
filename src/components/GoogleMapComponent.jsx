@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { FiMaximize2, FiMinimize2, FiLayers } from 'react-icons/fi';
 import { Loader } from '@googlemaps/js-api-loader';
-import { getAllCampusBuildings } from '../utils/googleMapsService';
+import { loadCampusBuildings } from '../utils/campusGraphService';
 
 const GoogleMapComponent = ({ userLocation, routeData }) => {
   const mapRef = useRef(null);
@@ -152,9 +152,15 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
     return labels[type] || '📍 Campus Location';
   };
 
-  // Add campus building markers
-  const addCampusMarkers = useCallback((map) => {
-    const buildings = getAllCampusBuildings();
+  // Add campus building markers (loaded from API when available)
+  const addCampusMarkers = useCallback(async (map) => {
+    let buildings = [];
+    try {
+      buildings = await loadCampusBuildings();
+    } catch (e) {
+      console.warn('⚠️ Failed to load buildings from API, no markers will be shown until authenticated.', e.message);
+      buildings = [];
+    }
     
     // Make navigation function available globally for info windows
     window.navigateToBuilding = (name, lat, lng) => {
@@ -171,7 +177,7 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
       });
     };
     
-    buildings.forEach(building => {
+  buildings.forEach(building => {
       const marker = new google.maps.Marker({
         position: { lat: building.lat, lng: building.lng },
         map: map,
@@ -244,7 +250,7 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
       markersRef.current.push(marker);
     });
 
-    console.log(`🏢 Added ${buildings.length} campus building markers`);
+  console.log(`🏢 Added ${buildings.length} campus building markers`);
   }, []);
 
   // Initialize Google Maps
@@ -348,8 +354,8 @@ const GoogleMapComponent = ({ userLocation, routeData }) => {
         });
         directionsRendererRef.current.setMap(map);
 
-        // Add campus building markers
-        addCampusMarkers(map);
+  // Add campus building markers
+  await addCampusMarkers(map);
         
         setIsLoaded(true);
         console.log('✅ Google Maps initialized successfully');

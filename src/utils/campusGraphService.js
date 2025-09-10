@@ -15,8 +15,10 @@ export async function loadCampusGraph() {
       const data = await apiGet('/graph');
       // Expecting { nodes, edges }
       return { version: 'api', nodes: data.nodes || [], edges: data.edges || [] };
-    } catch {
-      // fallback to local seed
+    } catch (e) {
+      // If unauthorized, propagate error for auth guard
+      if (/401|403/.test(String(e))) throw e;
+      // fallback to local seed when API unreachable
     }
   }
   return getCampusGraph();
@@ -26,9 +28,15 @@ export async function loadCampusBuildings() {
   if (HAS_API) {
     try {
       const g = await loadCampusGraph();
-      return (g.nodes || []).filter(n => n.type === 'building').map(n => ({ name: n.name, lat: n.lat, lng: n.lng, type: n.type }));
-    } catch {
-      // ignore
+      const HIDE = new Set(['waypoint', 'intersection', 'path']);
+      return (g.nodes || [])
+        .filter(n => typeof n.lat === 'number' && typeof n.lng === 'number')
+        .filter(n => !HIDE.has((n.type || '').toLowerCase()))
+        .map(n => ({ name: n.name, lat: n.lat, lng: n.lng, type: n.type || 'building' }));
+    } catch (e) {
+      // If unauthorized, rethrow so callers can show login
+      if (/401|403/.test(String(e))) throw e;
+      // else ignore and fall back to seed
     }
   }
   return getCampusBuildings();
